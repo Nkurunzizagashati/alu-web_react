@@ -1,52 +1,36 @@
 const path = require('path');
 
 module.exports = {
-	entry: './js/dashboard_main.js',
+	entry: './js/dashboard_main.js', // Single entry point
 	output: {
-		filename: 'bundle.[contenthash].js', // Add contenthash to ensure unique filenames
+		filename: 'bundle.js', // Simple filename without contenthash
 		path: path.resolve(__dirname, 'public'),
+		clean: true, // Clean the public folder before each build
 	},
 	mode: 'production',
 	module: {
 		rules: [
-			// Handle CSS
+			// CSS and style loaders
 			{
 				test: /\.css$/,
 				use: ['style-loader', 'css-loader'],
 			},
-			// Handle images
+			// Image loader using file-loader
 			{
 				test: /\.(png|jpg|jpeg|gif)$/i,
-				type: 'asset/resource',
 				use: [
 					{
-						loader: 'image-webpack-loader',
+						loader: 'file-loader',
 						options: {
-							mozjpeg: {
-								progressive: true,
-							},
-							optipng: {
-								enabled: true,
-							},
-							pngquant: {
-								quality: [0.65, 0.9],
-								speed: 4,
-							},
-							gifsicle: {
-								interlaced: false,
-							},
+							name: '[name].[ext]', // Keep original file name and extension
+							outputPath: 'assets/', // Output to assets folder in public
 						},
 					},
 				],
 			},
 		],
 	},
-	optimization: {
-		splitChunks: {
-			chunks: 'all', // Splits vendor and app-specific code into separate chunks
-		},
-	},
 	performance: {
-		maxAssetSize: 1000000, // Set asset size limit to 1MB to prevent warnings
+		maxAssetSize: 1000000, // Limit asset size warnings
 	},
 };
